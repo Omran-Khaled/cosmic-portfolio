@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Redirecting…</title>
     <script>
-      // Preserve the original requested path and redirect to index.html
+      // SPA fallback: redirect all routes to index.html for client-side routing
       const path = decodeURIComponent(location.pathname);
       const qs = location.search;
       const hash = location.hash;
-      const target = "/cosmic-portfolio/index.html?p=" + encodeURIComponent(path) + qs + hash;
-      if (path === "/cosmic-portfolio/" || path === "/cosmic-portfolio/index.html") {
-        location.replace("/cosmic-portfolio/");
-      } else {
+      // Redirect to index.html, preserving query params and hash
+      const target = "/cosmic-portfolio/index.html" + qs + hash;
+      // Avoid infinite loop: only redirect if not already on index.html
+      if (path !== "/cosmic-portfolio/index.html" && path !== "/cosmic-portfolio/") {
         location.replace(target);
       }
     </script>
