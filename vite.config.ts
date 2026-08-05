@@ -20,6 +20,11 @@ export default defineConfig({
     cssCodeSplit: true,
     rollupOptions: {
       output: {
+        // Keep entry filename stable (no hash) so public/index.html can reference it
+        entryFileNames: "assets/[name].js",
+        // Keep hashes on chunks and assets for cache busting
+        chunkFileNames: "assets/[name]-[hash].js",
+        assetFileNames: "assets/[name]-[hash][extname]",
         manualChunks(id) {
           if (id.includes("node_modules")) {
             if (id.includes("three") || id.includes("@react-three")) return "vendor-three";
