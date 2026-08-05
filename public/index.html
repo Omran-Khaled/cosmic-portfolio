@@ -8,6 +8,21 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      // TanStack Start expects window.$_TSR to be set by the SSR server.
+      // On static hosting (GitHub Pages), there's no server, so we provide
+      // a minimal stub that tells the client to load routes client-side.
+      window.$_TSR = {
+        router: {
+          matches: [],
+          manifest: { routes: {} },
+          dehydratedData: undefined,
+          lastMatchId: undefined,
+        },
+        buffer: [],
+        h: () => {},
+      };
+    </script>
     <script type="module" src="./assets/index.js"></script>
   </body>
 </html>
