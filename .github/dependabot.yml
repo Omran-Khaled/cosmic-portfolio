@@ -1,0 +1,18 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: wednesday
+      time: "09:00"
+      timezone: Asia/Damascus
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "chore(deps)"
+      include: scope
+    allow:
+      - dependency-type: direct
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]

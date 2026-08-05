@@ -1,0 +1,225 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Design system definition.
+ *
+ * The @theme inline block maps CSS custom properties to Tailwind utility
+ * classes (e.g. --color-primary -> bg-primary, text-primary).
+ *
+ * The :root and .dark blocks define the actual color values using oklch.
+ * All colors MUST use oklch format.
+ *
+ * To add a new semantic color:
+ * 1. Add the variable to :root (light value) and .dark (dark value)
+ * 2. Register it in @theme inline as --color-<name>: var(--<name>)
+ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+:root {
+  --radius: 0.75rem;
+
+  /* Deep space palette */
+  --background: oklch(0.16 0.035 265);
+  --foreground: oklch(0.95 0.015 240);
+  --card: oklch(0.22 0.04 265 / 60%);
+  --card-foreground: oklch(0.95 0.015 240);
+  --popover: oklch(0.2 0.04 265);
+  --popover-foreground: oklch(0.95 0.015 240);
+  --primary: oklch(0.82 0.14 195);
+  --primary-foreground: oklch(0.16 0.04 265);
+  --secondary: oklch(0.28 0.05 275);
+  --secondary-foreground: oklch(0.95 0.015 240);
+  --muted: oklch(0.26 0.04 270);
+  --muted-foreground: oklch(0.72 0.03 250);
+  --accent: oklch(0.8 0.15 85);
+  --accent-foreground: oklch(0.18 0.04 265);
+  --destructive: oklch(0.62 0.22 20);
+  --destructive-foreground: oklch(0.97 0.01 250);
+  --border: oklch(0.85 0.08 210 / 18%);
+  --input: oklch(0.85 0.08 210 / 22%);
+  --ring: oklch(0.82 0.14 195);
+
+  --nebula: oklch(0.66 0.2 300);
+  --nebula-foreground: oklch(0.97 0.01 250);
+  --signal: oklch(0.85 0.16 160);
+  --void: oklch(0.09 0.03 275);
+  --starlight: oklch(0.98 0.01 240);
+
+  --gradient-cosmos: radial-gradient(
+    ellipse at 50% 40%,
+    oklch(0.3 0.09 275) 0%,
+    oklch(0.17 0.05 270) 45%,
+    oklch(0.09 0.03 275) 100%
+  );
+  --gradient-horizon: linear-gradient(135deg, var(--primary), var(--nebula));
+  --shadow-glow: 0 0 40px -8px color-mix(in oklab, var(--primary) 55%, transparent);
+  --shadow-panel: 0 24px 70px -24px oklch(0.05 0.02 275 / 85%);
+  --blur-glass: saturate(150%) blur(18px);
+
+  --chart-1: oklch(0.82 0.14 195);
+  --chart-2: oklch(0.66 0.2 300);
+  --chart-3: oklch(0.8 0.15 85);
+  --chart-4: oklch(0.85 0.16 160);
+  --chart-5: oklch(0.7 0.18 25);
+  --sidebar: oklch(0.2 0.04 265);
+  --sidebar-foreground: oklch(0.95 0.015 240);
+  --sidebar-primary: oklch(0.82 0.14 195);
+  --sidebar-primary-foreground: oklch(0.16 0.04 265);
+  --sidebar-accent: oklch(0.28 0.05 275);
+  --sidebar-accent-foreground: oklch(0.95 0.015 240);
+  --sidebar-border: oklch(0.85 0.08 210 / 18%);
+  --sidebar-ring: oklch(0.82 0.14 195);
+}
+
+.dark {
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-nebula: var(--nebula);
+  --color-nebula-foreground: var(--nebula-foreground);
+  --color-signal: var(--signal);
+  --color-void: var(--void);
+  --color-starlight: var(--starlight);
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html,
+  body {
+    background: var(--void);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+}
+
+@utility glass-panel {
+  background: color-mix(in oklab, var(--void) 62%, transparent);
+  backdrop-filter: var(--blur-glass);
+  -webkit-backdrop-filter: var(--blur-glass);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-panel);
+}
+
+@utility text-cosmic {
+  background: var(--gradient-horizon);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+@utility label-mono {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+@keyframes cosmic-drift {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes signal-pulse {
+  0% {
+    opacity: 0.25;
+    transform: scaleX(0.2);
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.25;
+    transform: scaleX(1);
+  }
+}
+
+@keyframes veil-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@utility animate-drift {
+  animation: cosmic-drift 7s ease-in-out infinite;
+}
+
+@utility animate-veil-in {
+  animation: veil-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@utility animate-signal {
+  animation: signal-pulse 2.6s ease-in-out infinite;
+}
