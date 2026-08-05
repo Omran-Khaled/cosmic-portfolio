@@ -44,6 +44,7 @@ type UniverseState = {
  * `registerNode` is also cheap: positions are only recorded for the currently
  * focused object, since that is the only node the camera transition consumes.
  */
+// eslint-disable-next-line react-refresh/only-export-components
 export const useUniverseStore = create<UniverseState>((set, get) => ({
   focus: null,
   hovered: null,
@@ -105,6 +106,7 @@ export const useUniverseStore = create<UniverseState>((set, get) => ({
  * Consumers that need maximum render isolation should use `useUniverseStore`
  * with a narrow selector instead (e.g. a boolean for hover/focus activity).
  */
+// eslint-disable-next-line react-refresh/only-export-components
 export function useUniverse() {
   return useUniverseStore();
 }
