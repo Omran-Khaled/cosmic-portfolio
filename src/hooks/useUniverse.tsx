@@ -1,21 +1,10 @@
 import { create } from "zustand";
 import * as THREE from "three";
 import { storyStops } from "@/data/index";
-
-export type FocusKind = "sun" | "planet" | "galaxy" | "blackhole" | "station" | "orbits";
-export type Focus = { kind: FocusKind; id: string } | null;
-export type CameraMode = "explore" | "focus" | "story";
+import { resolveFocusKind } from "./useUniverse.constants";
+import type { CameraMode, Focus } from "./useUniverse.types";
 
 type NodeRegistry = Map<string, THREE.Vector3>;
-
-const FIXED_FOCUS_KINDS: Record<string, FocusKind> = {
-  sun: "sun",
-  orbits: "orbits",
-  blackhole: "blackhole",
-  station: "station",
-};
-
-const resolveFocusKind = (id: string): FocusKind => FIXED_FOCUS_KINDS[id] ?? "galaxy";
 
 type UniverseState = {
   focus: Focus;
