@@ -167,7 +167,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines.
 
 ## License
 
-Copyright © 2024 **Omran Khaled**. All rights reserved.
+Copyright © 2026 **Omran Khaled**. All rights reserved.
 
 See [OWNERSHIP.md](OWNERSHIP.md) for complete intellectual property terms.
 
