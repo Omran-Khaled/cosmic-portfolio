@@ -1,1 +1,6 @@
+# SPA fallback - exclude static assets from rewrite
+!/assets/*
+!/*.mp4
+!/*.svg
+!/robots.txt
 /*    /index.html   200
