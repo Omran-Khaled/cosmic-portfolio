@@ -14,7 +14,8 @@ export function Sun() {
 
   // Dispose sun geometry/material on unmount.
   useEffect(() => {
-    return () => disposeObject3D(group.current);
+    const groupObj = group.current;
+    return () => disposeObject3D(groupObj);
   }, []);
   const active = useUniverseStore((s) => s.hovered === "sun");
   const isFocused = useUniverseStore((s) => s.focus?.id === "sun");

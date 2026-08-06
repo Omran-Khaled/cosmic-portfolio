@@ -13,7 +13,8 @@ export function SpaceStation() {
 
   // Dispose station geometry/material on unmount.
   useEffect(() => {
-    return () => disposeObject3D(group.current);
+    const groupObj = group.current;
+    return () => disposeObject3D(groupObj);
   }, []);
   const active = useUniverseStore((s) => s.hovered === "station" || s.focus?.id === "station");
   const isFocused = useUniverseStore((s) => s.focus?.id === "station");

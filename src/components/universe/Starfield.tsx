@@ -51,7 +51,8 @@ export function Starfield({ count = 2600 }: { count?: number }) {
 
   // Dispose starfield geometry/material on unmount.
   useEffect(() => {
-    return () => disposeObject3D(ref.current);
+    const refObj = ref.current;
+    return () => disposeObject3D(refObj);
   }, []);
 
   useFrame((_, delta) => {

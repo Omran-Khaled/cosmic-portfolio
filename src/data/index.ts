@@ -26,28 +26,27 @@ export {
 // Runtime validation — Zod schemas ensure data integrity before any component renders.
 import { validateData, isIdentity, isPlanet, isGalaxy, isBlackHole } from "./validation";
 
-if (import.meta.env.DEV) {
-  // Full-bundle check: throws with a per-field error report on any mismatch.
-  validateData({
-    identity,
-    contact,
-    orbits,
-    planets,
-    galaxies,
-    blackHole,
-    timeline,
-    languages,
-    manifesto,
-  });
+// Full-bundle check: throws with a per-field error report on any mismatch.
+// Runs in both dev and production to guarantee data integrity before render.
+validateData({
+  identity,
+  contact,
+  orbits,
+  planets,
+  galaxies,
+  blackHole,
+  timeline,
+  languages,
+  manifesto,
+});
 
-  // Backwards-compatible guard drift check (cheap, whole-bundle catch above is authoritative).
-  if (
-    !isIdentity(identity) ||
-    !planets.every(isPlanet) ||
-    !galaxies.every(isGalaxy) ||
-    !isBlackHole(blackHole) ||
-    !isIdentity(identity)
-  ) {
-    console.error("[validation] Data integrity violation detected");
-  }
+// Backwards-compatible guard drift check (cheap, whole-bundle catch above is authoritative).
+if (
+  !isIdentity(identity) ||
+  !planets.every(isPlanet) ||
+  !galaxies.every(isGalaxy) ||
+  !isBlackHole(blackHole) ||
+  !isIdentity(identity)
+) {
+  console.error("[validation] Data integrity violation detected");
 }

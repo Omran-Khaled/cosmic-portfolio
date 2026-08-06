@@ -42,6 +42,20 @@ jobs:
       - name: Build project
         run: pnpm build
 
+      - name: Verify build output
+        run: |
+          # Verify all critical assets exist in the build output
+          test -f dist/client/index.html
+          test -f dist/client/_redirects
+          test -f dist/client/404.html
+          test -f dist/client/favicon.svg
+          test -f dist/client/khuta.mp4
+          test -f dist/client/library.mp4
+          test -f dist/client/wandr.mp4
+          test -f dist/client/cv/omran_khaled_cv.pdf
+          test -f dist/client/assets/index.js
+          echo "✅ All critical assets verified in build output"
+
       - name: Upload build artifacts
         uses: actions/upload-pages-artifact@v3
         with:

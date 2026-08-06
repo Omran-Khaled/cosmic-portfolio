@@ -26,7 +26,8 @@ export function Constellation() {
 
   // Dispose constellation geometry/material on unmount.
   useEffect(() => {
-    return () => disposeObject3D(group.current);
+    const groupObj = group.current;
+    return () => disposeObject3D(groupObj);
   }, []);
 
   useFrame(({ clock }) => {

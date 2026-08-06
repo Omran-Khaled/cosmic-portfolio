@@ -43,7 +43,8 @@ function GalaxyDisc({ galaxy }: { galaxy: Galaxy }) {
 
   // Dispose GPU resources when this galaxy unmounts — prevents memory leaks.
   useEffect(() => {
-    return () => disposeObject3D(group.current);
+    const groupObj = group.current;
+    return () => disposeObject3D(groupObj);
   }, []);
 
   // Narrow selectors: only this galaxy re-renders on its own hover/focus change.

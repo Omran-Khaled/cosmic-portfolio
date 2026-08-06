@@ -47,7 +47,8 @@ function Moon({
 
   // Dispose moon geometry/material on unmount.
   useEffect(() => {
-    return () => disposeObject3D(ref.current);
+    const refObj = ref.current;
+    return () => disposeObject3D(refObj);
   }, []);
 
   useFrame(({ clock }) => {
@@ -79,7 +80,8 @@ function PlanetBody({ planet }: { planet: Planet }) {
 
   // Dispose planet + moons GPU resources on unmount.
   useEffect(() => {
-    return () => disposeObject3D(group.current);
+    const groupObj = group.current;
+    return () => disposeObject3D(groupObj);
   }, []);
 
   // Narrow Zustand selectors: this planet re-renders ONLY when its own

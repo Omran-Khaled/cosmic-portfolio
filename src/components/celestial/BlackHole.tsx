@@ -14,7 +14,8 @@ export function BlackHole() {
 
   // Dispose GPU resources when the black hole unmounts.
   useEffect(() => {
-    return () => disposeObject3D(group.current);
+    const groupObj = group.current;
+    return () => disposeObject3D(groupObj);
   }, []);
   const active = useUniverseStore((s) => s.hovered === "blackhole" || s.focus?.id === "blackhole");
   const setFocus = useUniverseStore((s) => s.setFocus);
