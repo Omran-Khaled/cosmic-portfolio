@@ -50,18 +50,20 @@ interface LinkButtonProps {
   href: string;
   children: ReactNode;
   primary?: boolean;
+  download?: string;
 }
 
-export function LinkButton({ href, children, primary }: LinkButtonProps) {
+export function LinkButton({ href, children, primary, download }: LinkButtonProps) {
   return (
     <a
       href={href}
-      target="_blank"
-      rel="noreferrer noopener"
+      target={download ? undefined : "_blank"}
+      rel={download ? undefined : "noreferrer noopener"}
+      download={download}
       className={
         primary
-          ? "flex-1 rounded-xl border border-primary/50 bg-primary/15 px-3 py-2 text-center text-xs font-medium text-primary transition-all hover:-translate-y-0.5 hover:bg-primary/25"
-          : "flex-1 rounded-xl border border-border bg-secondary/40 px-3 py-2 text-center text-xs font-medium text-foreground transition-all hover:-translate-y-0.5 hover:bg-secondary"
+          ? "flex-1 rounded-xl border border-primary/50 bg-primary/15 px-3 py-2.5 text-center text-xs font-medium text-primary transition-all hover:-translate-y-0.5 hover:bg-primary/25 active:scale-95"
+          : "flex-1 rounded-xl border border-border bg-secondary/40 px-3 py-2.5 text-center text-xs font-medium text-foreground transition-all hover:-translate-y-0.5 hover:bg-secondary active:scale-95"
       }
     >
       {children}

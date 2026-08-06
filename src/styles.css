@@ -143,6 +143,9 @@
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    /* Prevent text size inflation on orientation change (iOS) */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
 
   h1,
@@ -151,6 +154,27 @@
   h4 {
     font-family: var(--font-display);
     letter-spacing: -0.02em;
+  }
+
+  /* Eliminate 300ms tap delay and double-tap zoom on interactive elements */
+  a,
+  button,
+  input,
+  select,
+  textarea {
+    touch-action: manipulation;
+  }
+
+  /* Consistent tap highlight — deep-space chrome instead of default grey flash */
+  * {
+    -webkit-tap-highlight-color: color-mix(in oklab, var(--primary) 22%, transparent);
+  }
+
+  /* Respect viewport safe areas (notches / home indicator) */
+  @supports (padding: env(safe-area-inset-top)) {
+    .min-h-safe {
+      min-height: calc(100vh - env(safe-area-inset-top));
+    }
   }
 }
 

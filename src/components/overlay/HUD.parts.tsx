@@ -43,7 +43,7 @@ export const StoryControls = React.memo(
       <div className="glass-panel flex items-center gap-2 rounded-full px-2 py-1.5">
         <button
           onClick={onPrev}
-          className="rounded-full px-2 py-1 text-xs text-muted-foreground hover:text-foreground"
+          className="rounded-full px-3 py-2 text-xs text-muted-foreground hover:text-foreground active:scale-95"
           aria-label="Previous stop"
         >
           ←
@@ -53,7 +53,7 @@ export const StoryControls = React.memo(
         </span>
         <button
           onClick={onNext}
-          className="rounded-full px-2 py-1 text-xs text-muted-foreground hover:text-foreground"
+          className="rounded-full px-3 py-2 text-xs text-muted-foreground hover:text-foreground active:scale-95"
           aria-label="Next stop"
         >
           →
@@ -120,7 +120,7 @@ export const WarpPalette = React.memo(
                   <button
                     key={d.id}
                     onClick={() => onWarp(d)}
-                    className="w-full rounded-lg px-3 py-2 text-left text-sm text-muted-foreground transition-colors hover:bg-secondary/60 hover:text-foreground"
+                    className="min-h-[44px] w-full rounded-lg px-3 py-2 text-left text-sm text-muted-foreground transition-colors hover:bg-secondary/60 hover:text-foreground active:bg-secondary/60"
                   >
                     {d.label}
                   </button>

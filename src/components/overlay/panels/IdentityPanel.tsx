@@ -1,5 +1,6 @@
 import React from "react";
 import { Block, Bullets } from "@/components/shared/InfoRow";
+import { CVDisplay } from "@/components/overlay/CVDisplay";
 import { identity } from "@/data/index";
 
 export const IdentityPanel = React.memo(() => {
@@ -23,6 +24,12 @@ export const IdentityPanel = React.memo(() => {
       <Block label="Signal fragments">
         <Bullets items={identity.fragments} dot="bg-primary" />
       </Block>
+      <div>
+        <p className="label-mono">Curriculum Vitae</p>
+        <div className="mt-3">
+          <CVDisplay />
+        </div>
+      </div>
     </div>
   );
 });

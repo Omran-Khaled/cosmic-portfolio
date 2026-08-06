@@ -64,7 +64,7 @@ export function Intro() {
             >
               <button
                 onClick={() => setOpen(false)}
-                className="rounded-full border border-primary/60 bg-primary/15 px-6 py-3 text-sm font-medium text-primary transition-all hover:bg-primary/25 hover:shadow-[var(--shadow-glow)]"
+                className="rounded-full border border-primary/60 bg-primary/15 px-6 py-3 text-sm font-medium text-primary transition-all hover:bg-primary/25 hover:shadow-[var(--shadow-glow)] active:scale-95"
               >
                 Enter the universe
               </button>
@@ -73,7 +73,7 @@ export function Intro() {
                   startStory();
                   setOpen(false);
                 }}
-                className="rounded-full border border-border px-6 py-3 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                className="rounded-full border border-border px-6 py-3 text-sm text-muted-foreground transition-colors hover:text-foreground active:scale-95"
               >
                 Take the guided journey
               </button>

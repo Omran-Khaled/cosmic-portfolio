@@ -1,15 +1,21 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Html } from "@react-three/drei";
 import * as THREE from "three";
 import { blackHole } from "@/data/index";
 import { useUniverseStore } from "@/hooks/useUniverse";
+import { disposeObject3D } from "@/lib/three-dispose";
 
 export function BlackHole() {
   const group = useRef<THREE.Group>(null);
   const disc = useRef<THREE.Mesh>(null);
   const ring = useRef<THREE.Mesh>(null);
   const worldPosition = useRef(new THREE.Vector3());
+
+  // Dispose GPU resources when the black hole unmounts.
+  useEffect(() => {
+    return () => disposeObject3D(group.current);
+  }, []);
   const active = useUniverseStore((s) => s.hovered === "blackhole" || s.focus?.id === "blackhole");
   const setFocus = useUniverseStore((s) => s.setFocus);
   const setHovered = useUniverseStore((s) => s.setHovered);

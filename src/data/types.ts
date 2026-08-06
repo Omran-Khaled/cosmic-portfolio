@@ -51,6 +51,7 @@ export type Galaxy = {
 };
 
 export type TimelineEntry = {
+  id: string;
   year: string;
   title: string;
   body: string;

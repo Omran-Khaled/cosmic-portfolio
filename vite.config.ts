@@ -16,26 +16,36 @@ export default defineConfig({
     tailwindcss(),
   ],
   build: {
-    // CSS code splitting: extract critical CSS per route for faster initial paint
     cssCodeSplit: true,
+    // Vite 8 minifies by default (uses oxc/rolldown) — no esbuild dependency needed.
+    chunkSizeWarningLimit: 600,
+    target: "es2020",
     rollupOptions: {
       output: {
-        // Keep entry filename stable (no hash) so public/index.html can reference it
         entryFileNames: "assets/[name].js",
-        // Keep hashes on chunks and assets for cache busting
         chunkFileNames: "assets/[name]-[hash].js",
         assetFileNames: "assets/[name]-[hash][extname]",
         manualChunks(id) {
           if (id.includes("node_modules")) {
-            if (id.includes("three") || id.includes("@react-three")) return "vendor-three";
-            if (id.includes("react") || id.includes("react-dom")) return "vendor-react";
-            if (id.includes("framer-motion")) return "vendor-framer";
+            if (
+              id.includes("three") ||
+              id.includes("@react-three") ||
+              id.includes("postprocessing")
+            )
+              return "vendor-three";
+            if (id.includes("react") || id.includes("react-dom") || id.includes("scheduler"))
+              return "vendor-react";
+            if (id.includes("framer-motion") || id.includes("motion")) return "vendor-framer";
             if (id.includes("@tanstack")) return "vendor-router";
+            if (id.includes("zustand")) return "vendor-zustand";
             return "vendor";
           }
           return undefined;
         },
       },
     },
+  },
+  optimizeDeps: {
+    include: ["three", "@react-three/fiber", "@react-three/drei", "framer-motion"],
   },
 });

@@ -1,9 +1,10 @@
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Html } from "@react-three/drei";
 import * as THREE from "three";
 import { orbits, planets, type Planet } from "@/data/index";
 import { useUniverseStore } from "@/hooks/useUniverse";
+import { disposeObject3D } from "@/lib/three-dispose";
 
 const ORBIT_SEGMENTS = 180;
 const MOON_SEGMENTS = 16;
@@ -44,6 +45,11 @@ function Moon({
   const speed = 0.8 + index * 0.25;
   const phase = (index / count) * Math.PI * 2;
 
+  // Dispose moon geometry/material on unmount.
+  useEffect(() => {
+    return () => disposeObject3D(ref.current);
+  }, []);
+
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime() * speed + phase;
     if (ref.current) {
@@ -70,6 +76,11 @@ function PlanetBody({ planet }: { planet: Planet }) {
   const body = useRef<THREE.Mesh>(null);
   const worldPosition = useRef(new THREE.Vector3());
   const targetScale = useRef(new THREE.Vector3());
+
+  // Dispose planet + moons GPU resources on unmount.
+  useEffect(() => {
+    return () => disposeObject3D(group.current);
+  }, []);
 
   // Narrow Zustand selectors: this planet re-renders ONLY when its own
   // hover/focus state changes — not when a sibling planet is hovered.

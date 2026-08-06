@@ -112,6 +112,7 @@ export const OrbitSchema = z.object({
 });
 
 export const TimelineEntrySchema = z.object({
+  id: z.string(),
   year: z.string(),
   title: z.string(),
   body: z.string(),

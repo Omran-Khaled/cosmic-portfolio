@@ -1,14 +1,20 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Html } from "@react-three/drei";
 import * as THREE from "three";
 import { contact } from "@/data/index";
 import { useUniverseStore } from "@/hooks/useUniverse";
+import { disposeObject3D } from "@/lib/three-dispose";
 
 export function SpaceStation() {
   const group = useRef<THREE.Group>(null);
   const ring = useRef<THREE.Mesh>(null);
   const worldPosition = useRef(new THREE.Vector3());
+
+  // Dispose station geometry/material on unmount.
+  useEffect(() => {
+    return () => disposeObject3D(group.current);
+  }, []);
   const active = useUniverseStore((s) => s.hovered === "station" || s.focus?.id === "station");
   const isFocused = useUniverseStore((s) => s.focus?.id === "station");
   const setFocus = useUniverseStore((s) => s.setFocus);

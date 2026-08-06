@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useInView } from "@/hooks/useInView";
 
 interface VideoPortalProps {
   open: boolean;
@@ -16,11 +17,14 @@ interface VideoPortalProps {
 export function VideoPortal({ open, src, title, onClose }: VideoPortalProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
+  const [videoError, setVideoError] = useState(false);
+  const { ref: containerRef, inView } = useInView<HTMLDivElement>();
 
   // Pause + reset when the modal closes; release the video element.
   useEffect(() => {
     if (!open) {
       setPlaying(false);
+      setVideoError(false);
       const v = videoRef.current;
       if (v) {
         v.pause();
@@ -28,7 +32,17 @@ export function VideoPortal({ open, src, title, onClose }: VideoPortalProps) {
         v.load();
       }
     }
-  }, [open]);
+  }, [open, src]);
+
+  // Pause when the video scrolls out of view — prevents background decoding lag.
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    if (!inView && playing) {
+      v.pause();
+      setPlaying(false);
+    }
+  }, [inView, playing]);
 
   // Close on Escape.
   useEffect(() => {
@@ -60,7 +74,7 @@ export function VideoPortal({ open, src, title, onClose }: VideoPortalProps) {
             exit={{ opacity: 0, scale: 0.95, y: 12 }}
             transition={{ type: "spring", stiffness: 260, damping: 26 }}
             onClick={(e) => e.stopPropagation()}
-            className="glass-panel w-[min(92vw,56rem)] overflow-hidden rounded-2xl"
+            className="glass-panel w-[min(92vw,56rem)] overflow-hidden rounded-2xl md:max-h-[90vh] md:overflow-y-auto"
           >
             {/* Header */}
             <div className="flex items-center justify-between border-b border-border/60 px-5 py-3">
@@ -78,18 +92,36 @@ export function VideoPortal({ open, src, title, onClose }: VideoPortalProps) {
             </div>
 
             {/* Video — mounted only when open, preload="none" for zero upfront bandwidth */}
-            <div className="relative aspect-video w-full bg-black">
-              <video
-                ref={videoRef}
-                src={src}
-                preload="none"
-                controls
-                playsInline
-                onPlay={() => setPlaying(true)}
-                onPause={() => setPlaying(false)}
-                className="h-full w-full"
-              />
-              {!playing && (
+            <div ref={containerRef} className="relative aspect-video w-full bg-black">
+              {videoError ? (
+                <div className="flex h-full w-full items-center justify-center bg-black/60 p-8 text-center">
+                  <div>
+                    <p className="text-2xl">⚠️</p>
+                    <p className="mt-2 text-sm text-muted-foreground">
+                      The video failed to load. Please try again later.
+                    </p>
+                    <button
+                      onClick={() => setVideoError(false)}
+                      className="mt-3 rounded-lg border border-primary/50 px-3 py-1.5 text-xs text-primary transition-colors hover:bg-primary/15"
+                    >
+                      Retry
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <video
+                  ref={videoRef}
+                  src={src}
+                  preload="none"
+                  controls
+                  playsInline
+                  onPlay={() => setPlaying(true)}
+                  onPause={() => setPlaying(false)}
+                  onError={() => setVideoError(true)}
+                  className="h-full w-full"
+                />
+              )}
+              {!playing && !videoError && (
                 <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
                   <div className="flex h-16 w-16 items-center justify-center rounded-full border border-primary/40 bg-primary/15 text-2xl text-primary">
                     ▶

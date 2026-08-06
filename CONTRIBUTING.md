@@ -86,6 +86,7 @@ chore: maintenance
 ## What to Contribute
 
 **Welcome**:
+
 - Bug fixes
 - Performance improvements
 - Accessibility enhancements
@@ -93,6 +94,7 @@ chore: maintenance
 - New celestial body data
 
 **Not Accepted**:
+
 - Complete design overhauls
 - Breaking changes without discussion
 - Commercial use without permission

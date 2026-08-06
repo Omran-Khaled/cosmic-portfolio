@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { VideoPortal } from "./VideoPortal";
+import { CVDisplay } from "./CVDisplay";
 import {
   blackHole,
   contact,
@@ -17,13 +18,15 @@ function Section({
   eyebrow,
   title,
   children,
+  id,
 }: {
   eyebrow: string;
   title: string;
   children: React.ReactNode;
+  id?: string;
 }) {
   return (
-    <section className="px-5 py-10">
+    <section className="scroll-mt-8 px-5 py-10" id={id}>
       <p className="label-mono text-primary">{eyebrow}</p>
       <h2 className="mt-1 font-display text-2xl font-semibold text-starlight">{title}</h2>
       <div className="mt-5">{children}</div>
@@ -31,23 +34,51 @@ function Section({
   );
 }
 
-/** Simplified 2D exploration for small screens and low-power devices. */
+/**
+ * Simplified 2D exploration for small screens and low-power devices.
+ *
+ * Mobile-first enhancements:
+ * - Clickable contact channels (GitHub / LinkedIn / Email) with 44px+ touch targets
+ * - Sticky bottom action bar with quick-contact shortcuts
+ * - Safe-area padding for notched devices
+ * - Visual tap feedback on every interactive element
+ */
 export function MobileUniverse() {
   const [demo, setDemo] = useState<{ src: string; title: string } | null>(null);
   return (
-    <div className="min-h-screen bg-[image:var(--gradient-cosmos)] pb-16">
+    <div className="min-h-screen bg-[image:var(--gradient-cosmos)] pb-24 [padding-bottom:calc(6rem+env(safe-area-inset-bottom))]">
       <VideoPortal
         open={demo !== null}
         src={demo?.src ?? ""}
         title={demo?.title ?? ""}
         onClose={() => setDemo(null)}
       />
-      <header className="px-5 pb-6 pt-14 text-center">
+      <header className="px-5 pb-6 pt-[calc(3.5rem+env(safe-area-inset-top))] text-center">
         <p className="label-mono text-primary">Explorable universe · simplified</p>
         <h1 className="mt-3 font-display text-4xl font-bold text-cosmic">{identity.name}</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           {identity.role} · {identity.location}
         </p>
+        {/* Quick contact chips under the name — visible without scrolling */}
+        <div className="mx-auto mt-6 grid max-w-sm grid-cols-3 gap-2">
+          {contact.channels.map((c) => (
+            <a
+              key={c.label}
+              href={c.href}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="flex min-h-[44px] flex-col items-center justify-center rounded-xl border border-primary/40 bg-primary/10 px-2 py-2 text-center transition-all active:scale-95 active:bg-primary/20"
+              aria-label={`${c.label}: ${c.value}`}
+            >
+              <span className="text-lg leading-none" aria-hidden="true">
+                {c.label === "GitHub" ? "⌥" : c.label === "LinkedIn" ? "in" : "✉"}
+              </span>
+              <span className="mt-1 text-[10px] font-medium uppercase tracking-wide text-primary">
+                {c.label}
+              </span>
+            </a>
+          ))}
+        </div>
         <div className="mt-6 space-y-2">
           {identity.fragments.map((f, i) => (
             <motion.p
@@ -60,6 +91,9 @@ export function MobileUniverse() {
               {f}
             </motion.p>
           ))}
+        </div>
+        <div className="mx-auto mt-6 max-w-sm">
+          <CVDisplay />
         </div>
       </header>
 
@@ -88,7 +122,7 @@ export function MobileUniverse() {
                           .map((tag) => (
                             <span
                               key={tag}
-                              className="rounded-full border border-border px-2 py-0.5 text-[10px] text-muted-foreground"
+                              className="rounded-full border border-border px-2 py-1 text-[10px] text-muted-foreground"
                             >
                               {tag}
                             </span>
@@ -113,7 +147,7 @@ export function MobileUniverse() {
               <div className="mt-3 flex gap-2">
                 <button
                   onClick={() => setDemo({ src: g.links.demo, title: g.name })}
-                  className="flex-1 rounded-xl border border-primary/50 bg-primary/15 px-3 py-2 text-center text-xs font-medium text-primary"
+                  className="min-h-[44px] flex-1 rounded-xl border border-primary/50 bg-primary/15 px-3 py-2 text-center text-xs font-medium text-primary transition-all active:scale-95 active:bg-primary/25"
                 >
                   ▶ Watch demo
                 </button>
@@ -121,7 +155,7 @@ export function MobileUniverse() {
                   href={g.links.github}
                   target="_blank"
                   rel="noreferrer noopener"
-                  className="flex-1 rounded-xl border border-border bg-secondary/40 px-3 py-2 text-center text-xs font-medium text-foreground"
+                  className="min-h-[44px] flex-1 rounded-xl border border-border bg-secondary/40 px-3 py-2 text-center text-xs font-medium text-foreground transition-all active:scale-95 active:bg-secondary"
                 >
                   ⌥ GitHub
                 </a>
@@ -146,7 +180,7 @@ export function MobileUniverse() {
                 {g.stack.map((s) => (
                   <span
                     key={s}
-                    className="rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 text-[10px] text-primary"
+                    className="rounded-full border border-primary/40 bg-primary/10 px-2 py-1 text-[10px] text-primary"
                   >
                     {s}
                   </span>
@@ -199,7 +233,7 @@ export function MobileUniverse() {
       <Section eyebrow="Constellation" title="Training & education">
         <ol className="relative space-y-5 border-l border-border pl-5">
           {timeline.map((t) => (
-            <li key={t.year}>
+            <li key={t.id}>
               <span className="absolute -left-[5px] mt-1.5 h-2.5 w-2.5 rounded-full bg-primary" />
               <p className="label-mono text-primary">{t.year}</p>
               <p className="font-display text-sm font-semibold text-foreground">{t.title}</p>
@@ -228,7 +262,8 @@ export function MobileUniverse() {
         </div>
       </Section>
 
-      <Section eyebrow="Uplink" title={contact.title}>
+      <Section eyebrow="Uplink" title={contact.title} id="contact">
+        {/* Basic info */}
         <div className="glass-panel rounded-2xl p-4">
           {contact.lines.map((l) => (
             <div
@@ -240,6 +275,24 @@ export function MobileUniverse() {
             </div>
           ))}
         </div>
+
+        {/* Clickable channels — 44px+ targets */}
+        <p className="label-mono mt-6">Channels</p>
+        <div className="mt-2 space-y-2">
+          {contact.channels.map((c) => (
+            <a
+              key={c.label}
+              href={c.href}
+              target={c.label === "Email" ? undefined : "_blank"}
+              rel={c.label === "Email" ? undefined : "noreferrer noopener"}
+              className="flex min-h-[48px] items-center justify-between gap-3 rounded-xl border border-border bg-secondary/40 px-4 py-3 text-sm text-foreground transition-all active:scale-[0.98] active:border-primary/50 active:bg-primary/10"
+            >
+              <span className="label-mono">{c.label}</span>
+              <span className="truncate text-right">{c.obfuscated ?? c.value} ↗</span>
+            </a>
+          ))}
+        </div>
+
         <div className="mt-6 space-y-2 text-center">
           {manifesto.map((m) => (
             <p key={m} className="text-xs italic text-muted-foreground">
@@ -248,6 +301,31 @@ export function MobileUniverse() {
           ))}
         </div>
       </Section>
+
+      {/* Sticky bottom action bar — quick access to contact while scrolling */}
+      <nav
+        aria-label="Quick contact"
+        className="glass-panel fixed bottom-3 left-3 right-3 z-10 flex items-center justify-between gap-2 rounded-2xl px-3 py-2 [bottom:calc(0.75rem+env(safe-area-inset-bottom))] md:hidden"
+      >
+        <span className="label-mono hidden text-[10px] sm:inline">Open to work</span>
+        <div className="flex flex-1 items-center justify-center gap-2">
+          {contact.channels.map((c) => (
+            <a
+              key={c.label}
+              href={c.href}
+              target={c.label === "Email" ? undefined : "_blank"}
+              rel={c.label === "Email" ? undefined : "noreferrer noopener"}
+              className="flex min-h-[40px] flex-1 items-center justify-center gap-1.5 rounded-xl border border-border bg-secondary/50 px-3 py-2 text-xs font-medium text-foreground transition-all active:scale-95 active:border-primary/50 active:bg-primary/15"
+              aria-label={`${c.label} — ${c.value}`}
+            >
+              <span aria-hidden="true">
+                {c.label === "GitHub" ? "⌥" : c.label === "LinkedIn" ? "in" : "✉"}
+              </span>
+              <span className="hidden sm:inline">{c.label}</span>
+            </a>
+          ))}
+        </div>
+      </nav>
     </div>
   );
 }

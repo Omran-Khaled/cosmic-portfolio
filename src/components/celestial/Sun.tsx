@@ -1,14 +1,21 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Html } from "@react-three/drei";
 import * as THREE from "three";
 import { identity } from "@/data/index";
 import { useUniverseStore } from "@/hooks/useUniverse";
+import { disposeObject3D } from "@/lib/three-dispose";
 
 export function Sun() {
+  const group = useRef<THREE.Group>(null);
   const core = useRef<THREE.Mesh>(null);
   const halo = useRef<THREE.Mesh>(null);
   const worldPosition = useRef(new THREE.Vector3());
+
+  // Dispose sun geometry/material on unmount.
+  useEffect(() => {
+    return () => disposeObject3D(group.current);
+  }, []);
   const active = useUniverseStore((s) => s.hovered === "sun");
   const isFocused = useUniverseStore((s) => s.focus?.id === "sun");
   const setFocus = useUniverseStore((s) => s.setFocus);
@@ -29,7 +36,7 @@ export function Sun() {
   });
 
   return (
-    <group>
+    <group ref={group}>
       <pointLight intensity={2.2} distance={40} decay={2} color="#ffd8a8" />
       <mesh
         ref={core}

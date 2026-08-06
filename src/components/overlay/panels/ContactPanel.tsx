@@ -16,12 +16,12 @@ export const ContactPanel = React.memo(() => {
           <a
             key={c.label}
             href={c.href}
-            target="_blank"
-            rel="noreferrer noopener"
-            className="flex items-center justify-between rounded-xl border border-border bg-secondary/30 px-3 py-2 text-sm transition-all hover:-translate-y-0.5 hover:border-primary/50 hover:bg-primary/10"
+            target={c.label === "Email" ? undefined : "_blank"}
+            rel={c.label === "Email" ? undefined : "noreferrer noopener"}
+            className="flex min-h-[44px] items-center justify-between gap-3 rounded-xl border border-border bg-secondary/30 px-4 py-3 text-sm transition-all hover:-translate-y-0.5 hover:border-primary/50 hover:bg-primary/10 active:scale-[0.98]"
           >
             <span className="label-mono">{c.label}</span>
-            <span className="text-foreground">{c.obfuscated ?? c.value} ↗</span>
+            <span className="truncate text-foreground">{c.obfuscated ?? c.value} ↗</span>
           </a>
         ))}
       </div>

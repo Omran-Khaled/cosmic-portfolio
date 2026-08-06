@@ -28,7 +28,7 @@ export const BlackHolePanel = React.memo(() => {
         <p className="label-mono">Constellation · learning path</p>
         <ol className="mt-2 space-y-3">
           {timeline.map((t) => (
-            <li key={t.year} className="rounded-xl border border-border/70 bg-secondary/30 p-3">
+            <li key={t.id} className="rounded-xl border border-border/70 bg-secondary/30 p-3">
               <p className="label-mono text-primary">{t.year}</p>
               <p className="text-sm font-medium text-foreground">{t.title}</p>
               <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{t.detail}</p>

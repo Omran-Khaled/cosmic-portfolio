@@ -1,8 +1,9 @@
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Html } from "@react-three/drei";
 import * as THREE from "three";
 import { timeline } from "@/data/index";
+import { disposeObject3D } from "@/lib/three-dispose";
 
 const POINT_SPACING = 13;
 const POINT_Y_AMPLITUDE = 5;
@@ -22,6 +23,11 @@ const points = timeline.map(
 export function Constellation() {
   const group = useRef<THREE.Group>(null);
   const lineGeometry = useMemo(() => new THREE.BufferGeometry().setFromPoints(points), []);
+
+  // Dispose constellation geometry/material on unmount.
+  useEffect(() => {
+    return () => disposeObject3D(group.current);
+  }, []);
 
   useFrame(({ clock }) => {
     if (group.current) group.current.position.y = Math.sin(clock.getElapsedTime() * 0.3) * 0.6;

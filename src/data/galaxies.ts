@@ -1,5 +1,14 @@
 import type { Galaxy } from "./types";
 
+/**
+ * Resolve a static asset URL against Vite's configured base path.
+ * Vite injects `import.meta.env.BASE_URL` at build time — on GitHub Pages
+ * this is "/cosmic-portfolio/", in local dev it's "/". Using it here ensures
+ * videos (and any other public/ assets) always resolve to the correct path
+ * regardless of where the site is hosted.
+ */
+const asset = (name: string) => `${import.meta.env.BASE_URL}${name}`;
+
 export const galaxies: Galaxy[] = [
   {
     id: "khuta",
@@ -13,7 +22,7 @@ export const galaxies: Galaxy[] = [
     type: "Product · Web app",
     status: "Live",
     stack: ["React", "TypeScript", "i18n", "RTL/LTR", "Maps", "Tailwind"],
-    links: { demo: "/khuta.mp4", github: "https://github.com/Omran-Khaled/khuta" },
+    links: { demo: asset("khuta.mp4"), github: "https://github.com/Omran-Khaled/khuta" },
     metrics: [
       { label: "Languages", value: "AR + EN" },
       { label: "Layout forks", value: "0" },
@@ -62,7 +71,7 @@ export const galaxies: Galaxy[] = [
     type: "Design system · Library",
     status: "Maintained",
     stack: ["Design System", "Tailwind", "CVA", "Radix", "Tokens", "Dark Mode"],
-    links: { demo: "/wandr.mp4", github: "https://github.com/Omran-Khaled/wandr" },
+    links: { demo: asset("wandr.mp4"), github: "https://github.com/Omran-Khaled/wandr" },
     metrics: [
       { label: "Primitives", value: "30+" },
       { label: "Themes", value: "2 (token swap)" },
@@ -112,7 +121,7 @@ export const galaxies: Galaxy[] = [
     status: "Complete",
     stack: ["React", "Node.js", "Express", "MongoDB", "REST", "JWT Auth"],
     links: {
-      demo: "/library.mp4",
+      demo: asset("library.mp4"),
       github: "https://github.com/Omran-Khaled/Library-Inventory-Management-System",
     },
     metrics: [

@@ -1,9 +1,10 @@
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Html } from "@react-three/drei";
 import * as THREE from "three";
 import { galaxies, type Galaxy } from "@/data/index";
 import { useUniverseStore } from "@/hooks/useUniverse";
+import { disposeObject3D } from "@/lib/three-dispose";
 
 const STAR_COUNT = 1400;
 const DISC_RADIUS = 6;
@@ -40,6 +41,11 @@ function GalaxyDisc({ galaxy }: { galaxy: Galaxy }) {
   const worldPosition = useRef(new THREE.Vector3());
   const targetScale = useRef(new THREE.Vector3());
 
+  // Dispose GPU resources when this galaxy unmounts — prevents memory leaks.
+  useEffect(() => {
+    return () => disposeObject3D(group.current);
+  }, []);
+
   // Narrow selectors: only this galaxy re-renders on its own hover/focus change.
   const isHovered = useUniverseStore((s) => s.hovered === galaxy.id);
   const isFocused = useUniverseStore((s) => s.focus?.id === galaxy.id);
@@ -49,7 +55,19 @@ function GalaxyDisc({ galaxy }: { galaxy: Galaxy }) {
   const setHovered = useUniverseStore((s) => s.setHovered);
   const registerNode = useUniverseStore((s) => s.registerNode);
 
-  const geometry = useMemo(() => createGalaxyGeometry(galaxy.color), [galaxy.color]);
+  // Use deterministic seed based on galaxy ID to avoid hydration mismatch
+  const geometry = useMemo(() => {
+    // Temporarily replace Math.random with seeded random for SSR
+    const originalRandom = Math.random;
+    let seed = galaxy.id.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    Math.random = () => {
+      seed = (seed * 9301 + 49297) % 233280;
+      return seed / 233280;
+    };
+    const geo = createGalaxyGeometry(galaxy.color);
+    Math.random = originalRandom;
+    return geo;
+  }, [galaxy.color, galaxy.id]);
 
   useFrame((_, delta) => {
     if (disc.current) disc.current.rotation.y += delta * (isHovered ? 0.28 : 0.08);

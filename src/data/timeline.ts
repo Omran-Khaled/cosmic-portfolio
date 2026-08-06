@@ -1,4 +1,5 @@
 export interface TimelineEntry {
+  id: string;
   year: string;
   title: string;
   body: string;
@@ -7,6 +8,7 @@ export interface TimelineEntry {
 
 export const timeline: TimelineEntry[] = [
   {
+    id: "foundations-2021",
     year: "2021",
     title: "Foundations",
     body: "HTML, CSS and JavaScript fundamentals — layout, the box model, and the DOM.",
@@ -14,6 +16,7 @@ export const timeline: TimelineEntry[] = [
       "Rebuilt real interfaces from screenshots to learn spacing, hierarchy and the cascade the hard way.",
   },
   {
+    id: "react-training-2025",
     year: "2025",
     title: "React Training",
     body: "Component architecture, state management, and building real multi-screen interfaces.",
@@ -21,6 +24,7 @@ export const timeline: TimelineEntry[] = [
       "Moved from page-thinking to component-thinking: props as contracts, state at the lowest owning node.",
   },
   {
+    id: "design-systems-2024",
     year: "2024",
     title: "Design Systems",
     body: "Tokens, accessibility standards, and reusable component libraries in production work.",
@@ -28,6 +32,7 @@ export const timeline: TimelineEntry[] = [
       "Learned that a system is documentation plus constraints — the components are only the visible part.",
   },
   {
+    id: "fullstack-2026",
     year: "2026",
     title: "Full-stack Practice",
     body: "APIs, MongoDB, and connecting interfaces to real data lifecycles.",
@@ -35,6 +40,7 @@ export const timeline: TimelineEntry[] = [
       "Modelling data around events rather than states changed how I design front-end flows too.",
   },
   {
+    id: "ai-engineering-2025",
     year: "2025",
     title: "AI Engineering",
     body: "Prompt engineering, AI-assisted workflows, and evaluation of generated output.",

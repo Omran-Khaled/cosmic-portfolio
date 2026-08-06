@@ -1,6 +1,7 @@
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import { disposeObject3D } from "@/lib/three-dispose";
 
 const STAR_PALETTE = [
   new THREE.Color("#bae6fd"),
@@ -35,7 +36,23 @@ function createStarfieldGeometry(count: number): THREE.BufferGeometry {
 
 export function Starfield({ count = 2600 }: { count?: number }) {
   const ref = useRef<THREE.Points>(null);
-  const geometry = useMemo(() => createStarfieldGeometry(count), [count]);
+  const geometry = useMemo(() => {
+    // Use deterministic seed based on count to avoid hydration mismatch
+    const originalRandom = Math.random;
+    let seed = count;
+    Math.random = () => {
+      seed = (seed * 9301 + 49297) % 233280;
+      return seed / 233280;
+    };
+    const geo = createStarfieldGeometry(count);
+    Math.random = originalRandom;
+    return geo;
+  }, [count]);
+
+  // Dispose starfield geometry/material on unmount.
+  useEffect(() => {
+    return () => disposeObject3D(ref.current);
+  }, []);
 
   useFrame((_, delta) => {
     if (ref.current) ref.current.rotation.y += delta * 0.007;
