@@ -19,12 +19,17 @@ export function VideoPortal({ open, src, title, onClose }: VideoPortalProps) {
   const [playing, setPlaying] = useState(false);
   const [videoError, setVideoError] = useState(false);
   const { ref: containerRef, inView } = useInView<HTMLDivElement>();
+  // Tracks whether the video container has ever been in view. Prevents the
+  // initial `inView=false` state (before the IntersectionObserver fires) from
+  // immediately pausing a freshly-opened modal.
+  const wasInViewRef = useRef(false);
 
   // Pause + reset when the modal closes; release the video element.
   useEffect(() => {
     if (!open) {
       setPlaying(false);
       setVideoError(false);
+      wasInViewRef.current = false;
       const v = videoRef.current;
       if (v) {
         v.pause();
@@ -35,10 +40,17 @@ export function VideoPortal({ open, src, title, onClose }: VideoPortalProps) {
   }, [open, src]);
 
   // Pause when the video scrolls out of view — prevents background decoding lag.
+  // Only pause if the video was previously in view (i.e. the user actually
+  // started it while it was visible). This prevents the initial `inView=false`
+  // state from immediately pausing a freshly-opened modal.
   useEffect(() => {
+    if (inView) {
+      wasInViewRef.current = true;
+      return;
+    }
     const v = videoRef.current;
     if (!v) return;
-    if (!inView && playing) {
+    if (wasInViewRef.current && playing) {
       v.pause();
       setPlaying(false);
     }
