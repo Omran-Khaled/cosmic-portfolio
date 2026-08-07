@@ -1,6 +1,6 @@
 # Ownership and Intellectual Property
 
-**© 2024 Omran Khaled. All rights reserved.**
+**© 2026 Omran Khaled. All rights reserved.**
 
 ---
 
