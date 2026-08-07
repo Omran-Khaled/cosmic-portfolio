@@ -32,8 +32,39 @@ function disposeMaterial(material: THREE.Material): void {
     "roughnessMap",
     "metalnessMap",
     "alphaMap",
+    "aoMap",
+    "bumpMap",
+    "displacementMap",
+    "lightMap",
+    "specularMap",
+    "envMap",
   ]) {
     const texture = std[key];
     if (texture instanceof THREE.Texture) texture.dispose();
+  }
+}
+
+/**
+ * Disposes a WebGLRenderer instance completely, including its DOM element,
+ * render targets, and any attached state. Call this when the canvas unmounts
+ * to free all GPU resources and prevent "Context Lost" warnings.
+ */
+export function disposeRenderer(renderer: THREE.WebGLRenderer | null | undefined): void {
+  if (!renderer) return;
+  renderer.dispose();
+  renderer.forceContextLoss();
+  const dom = renderer.domElement;
+  if (dom && dom.parentElement) {
+    dom.parentElement.removeChild(dom);
+  }
+}
+
+/**
+ * Cancels a requestAnimationFrame loop safely. Pass the id returned by
+ * `requestAnimationFrame` and this will cancel it if it's still valid.
+ */
+export function cancelAnimationLoop(rafId: number | null | undefined): void {
+  if (rafId !== null && rafId !== undefined) {
+    cancelAnimationFrame(rafId);
   }
 }
