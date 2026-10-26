@@ -6,10 +6,15 @@ import {
   useRouter,
   HeadContent,
   Scripts,
+  type ErrorComponentProps,
 } from "@tanstack/react-router";
 import { type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+
+const title = "Omran Khaled — MERN Stack Developer Universe";
+const description =
+  "An explorable 3D universe portfolio: skills as planets, projects as galaxies, and AI engineering as a black hole. Built by Omran Khaled.";
 
 function NotFoundComponent() {
   return (
@@ -33,7 +38,7 @@ function NotFoundComponent() {
   );
 }
 
-function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+function ErrorComponent({ error, reset }: ErrorComponentProps) {
   console.error(error);
   const router = useRouter();
 
@@ -57,7 +62,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
             Try again
           </button>
           <a
-            href="/"
+            href={import.meta.env.BASE_URL}
             className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
           >
             Go home
@@ -72,10 +77,22 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
       { name: "author", content: "Omran Khaled" },
-      { property: "og:title", content: "Omran Portfolio" },
-      { property: "og:type", content: "website" },
+      { name: "referrer", content: "strict-origin-when-cross-origin" },
+      { name: "theme-color", content: "#070b16" },
+      { name: "color-scheme", content: "dark" },
+      { name: "robots", content: "index, follow" },
+      { title },
+      { name: "description", content: description },
+      { property: "og:title", content: title },
+      { property: "og:description", content: description },
+      { property: "og:type", content: "profile" },
+      { property: "og:url", content: "https://omran-khaled.github.io/cosmic-portfolio/" },
+      { property: "og:site_name", content: "Omran Khaled Portfolio" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: title },
+      { name: "twitter:description", content: description },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -89,6 +106,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: appCss,
       },
       { rel: "icon", href: `${import.meta.env.BASE_URL}favicon.svg`, type: "image/svg+xml" },
+      { rel: "canonical", href: "https://omran-khaled.github.io/cosmic-portfolio/" },
     ],
   }),
   shellComponent: RootShell,
@@ -104,6 +122,15 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
+        <noscript>
+          <main>
+            <h1>Omran Khaled — MERN Stack Developer</h1>
+            <p>
+              This portfolio requires JavaScript for the interactive universe. Contact Omran Khaled
+              through the links in the rendered portfolio.
+            </p>
+          </main>
+        </noscript>
         {children}
         <Scripts />
       </body>

@@ -5,11 +5,11 @@ on:
     branches:
       - main
   workflow_dispatch:
+  pull_request:
 
+# Default permissions are intentionally read-only.
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
   group: "pages-deploy"
@@ -18,56 +18,71 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
-          version: 9
+          version: 10.34.5
+          run_install: false
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
-          node-version: 20
-          cache: "pnpm"
+          node-version: 22.12.0
+          cache: pnpm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Audit dependencies
+        run: pnpm audit --audit-level=high
+
       - name: Run linting
         run: pnpm lint
+
+      - name: Check formatting
+        run: pnpm format:check
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Test
+        run: pnpm test
 
       - name: Build project
         run: pnpm build
 
       - name: Verify build output
-        run: |
-          # Verify all critical assets exist in the build output
-          test -f dist/client/index.html
-          test -f dist/client/_redirects
-          test -f dist/client/404.html
-          test -f dist/client/favicon.svg
-          test -f dist/client/khuta.mp4
-          test -f dist/client/library.mp4
-          test -f dist/client/wandr.mp4
-          test -f dist/client/cv/omran_khaled_cv.pdf
-          test -f dist/client/assets/index.js
-          echo "✅ All critical assets verified in build output"
+        run: pnpm release:validate
+
+      - name: Smoke-test static Pages artifact
+        run: pnpm smoke:static
 
       - name: Upload build artifacts
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
         with:
           path: ./dist/client
 
   deploy:
+    # Deployment permissions are scoped to this job only.
+    permissions:
+      actions: read
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     needs: build
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5

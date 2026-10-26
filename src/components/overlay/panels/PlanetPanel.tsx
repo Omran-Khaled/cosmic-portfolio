@@ -1,5 +1,5 @@
 import React from "react";
-import { Block, Bullets, Meter } from "@/components/shared/InfoRow";
+import { Block, Bullets } from "@/components/shared/InfoRow";
 import { planets, orbits } from "@/data/index";
 
 export const PlanetPanel = React.memo(({ id }: { id: string }) => {
@@ -13,10 +13,7 @@ export const PlanetPanel = React.memo(({ id }: { id: string }) => {
       <div>
         <div className="flex justify-between text-xs text-muted-foreground">
           <span className="label-mono">Depth signal</span>
-          <span>{Math.round(planet.level * 100)}%</span>
-        </div>
-        <div className="mt-2">
-          <Meter value={planet.level} color={planet.color} />
+          <span>{planet.level}</span>
         </div>
       </div>
       <Block label="How I work here">

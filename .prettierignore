@@ -6,3 +6,6 @@ pnpm-lock.yaml
 package-lock.json
 bun.lock
 routeTree.gen.ts
+
+# Git reference snapshots captured during audits (mirrors the ESLint ignore list)
+docs/audit-refs

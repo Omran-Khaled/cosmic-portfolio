@@ -1,8 +1,8 @@
 import { create } from "zustand";
-import * as THREE from "three";
+import type * as THREE from "three";
 import { storyStops } from "@/data/index";
 
-export type FocusKind = "sun" | "planet" | "galaxy" | "blackhole" | "station" | "orbits";
+export type FocusKind = "sun" | "planet" | "galaxy" | "blackhole" | "station" | "orbits" | "comet";
 export type Focus = { kind: FocusKind; id: string } | null;
 export type CameraMode = "explore" | "focus" | "story";
 
@@ -23,6 +23,8 @@ type UniverseState = {
   mode: CameraMode;
   storyIndex: number;
   autoOrbit: boolean;
+  userDriving: boolean;
+  introOpen: boolean;
   warpAt: number;
   nodes: NodeRegistry;
   setFocus: (focus: Focus) => void;
@@ -33,6 +35,8 @@ type UniverseState = {
   prevStop: () => void;
   exitStory: () => void;
   toggleAutoOrbit: () => void;
+  setUserDriving: (v: boolean, time?: number) => void;
+  dismissIntro: () => void;
   registerNode: (id: string, position: THREE.Vector3) => void;
 };
 
@@ -43,31 +47,51 @@ type UniverseState = {
  *
  * `registerNode` is also cheap: positions are only recorded for the currently
  * focused object, since that is the only node the camera transition consumes.
+ *
+ * Node cleanup: The registry is cleared when focus changes to prevent unbounded
+ * memory growth as the user explores the universe.
  */
+// Note: ESLint disable for react-refresh/only-export-components is required here because
+// this file exports both the Zustand store (useUniverseStore) and a convenience hook (useUniverse).
+// Zustand stores don't need to follow React Refresh rules as they're not components.
 // eslint-disable-next-line react-refresh/only-export-components
 export const useUniverseStore = create<UniverseState>((set, get) => ({
   focus: null,
   hovered: null,
   mode: "explore",
   storyIndex: 0,
-  autoOrbit: true,
+  autoOrbit: false,
+  introOpen: true,
   warpAt: 0,
   nodes: new Map(),
 
-  setFocus: (focus) => set({ mode: focus ? "focus" : "explore", focus, warpAt: Date.now() }),
+  setFocus: (focus) => {
+    // Clear the node registry when focus changes to prevent memory leaks
+    const nodes = get().nodes;
+    nodes.clear();
+    set({ mode: focus ? "focus" : "explore", focus, warpAt: get().warpAt + 1 });
+  },
 
-  clearFocus: () => set({ mode: "explore", focus: null, warpAt: Date.now() }),
+  clearFocus: () => {
+    // Clear the node registry when focus is cleared
+    const nodes = get().nodes;
+    nodes.clear();
+    set({ mode: "explore", focus: null, warpAt: get().warpAt + 1 });
+  },
 
   setHovered: (id) => set({ hovered: id }),
 
   startStory: () => {
     const id = storyStops[0];
     if (!id) return;
+    // Clear nodes when starting story mode
+    const nodes = get().nodes;
+    nodes.clear();
     set({
       storyIndex: 0,
       mode: "story",
       focus: { kind: resolveFocusKind(id), id },
-      warpAt: Date.now(),
+      warpAt: get().warpAt + 1,
     });
   },
 
@@ -77,7 +101,14 @@ export const useUniverseStore = create<UniverseState>((set, get) => ({
     const clamped = Math.min(storyStops.length - 1, storyIndex + 1);
     const id = storyStops[clamped];
     if (!id) return;
-    set({ storyIndex: clamped, focus: { kind: resolveFocusKind(id), id }, warpAt: Date.now() });
+    // Clear nodes when moving to next story stop
+    const nodes = get().nodes;
+    nodes.clear();
+    set({
+      storyIndex: clamped,
+      focus: { kind: resolveFocusKind(id), id },
+      warpAt: get().warpAt + 1,
+    });
   },
 
   prevStop: () => {
@@ -86,12 +117,27 @@ export const useUniverseStore = create<UniverseState>((set, get) => ({
     const clamped = Math.max(0, storyIndex - 1);
     const id = storyStops[clamped];
     if (!id) return;
-    set({ storyIndex: clamped, focus: { kind: resolveFocusKind(id), id }, warpAt: Date.now() });
+    // Clear nodes when moving to previous story stop
+    const nodes = get().nodes;
+    nodes.clear();
+    set({
+      storyIndex: clamped,
+      focus: { kind: resolveFocusKind(id), id },
+      warpAt: get().warpAt + 1,
+    });
   },
 
-  exitStory: () => set({ mode: "explore", focus: null, storyIndex: 0, warpAt: Date.now() }),
+  exitStory: () => {
+    // Clear nodes when exiting story mode
+    const nodes = get().nodes;
+    nodes.clear();
+    set({ mode: "explore", focus: null, storyIndex: 0, warpAt: get().warpAt + 1 });
+  },
 
   toggleAutoOrbit: () => set({ autoOrbit: !get().autoOrbit }),
+  dismissIntro: () => set({ introOpen: false }),
+  userDriving: false,
+  setUserDriving: (v: boolean) => set({ userDriving: v }),
 
   registerNode: (id, position) => {
     // Only the focused body's live position matters for camera transitions.
@@ -106,6 +152,8 @@ export const useUniverseStore = create<UniverseState>((set, get) => ({
  * Consumers that need maximum render isolation should use `useUniverseStore`
  * with a narrow selector instead (e.g. a boolean for hover/focus activity).
  */
+// Note: ESLint disable required here for backward compatibility with existing consumer code.
+// The useUniverse function is exported alongside the store for convenience.
 // eslint-disable-next-line react-refresh/only-export-components
 export function useUniverse() {
   return useUniverseStore();

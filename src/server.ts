@@ -50,10 +50,25 @@ function withSecurityHeaders(response: Response): Response {
   headers.set("X-Frame-Options", "DENY");
   headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
   headers.set("Permissions-Policy", "geolocation=(), microphone=(), camera=()");
-  headers.set(
-    "Content-Security-Policy",
-    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self'; frame-ancestors 'none'; worker-src 'self' blob:;",
-  );
+
+  // CSP: Development vs Production
+  // In development, Vite requires 'unsafe-inline' for HMR (Hot Module Replacement)
+  // In production, we use strict CSP without 'unsafe-inline'
+  const isDevelopment = process.env["NODE_ENV"] !== "production";
+
+  // CSP: Development vs Production
+  // In development, Vite HMR injects inline scripts, so we allow 'unsafe-inline'.
+  // In production we intentionally do NOT set a CSP header here: the
+  // <meta http-equiv="Content-Security-Policy"> tag injected by Vite/TanStack
+  // Start carries correct script hashes for the inlined framework scripts.
+  // Setting a CSP header would intersect with the meta tag and reduce
+  // script-src to only 'self', blocking those inlined scripts.
+  if (isDevelopment) {
+    const csp =
+      "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' ws: wss:; frame-ancestors 'none'; worker-src 'self' blob:;";
+    headers.set("Content-Security-Policy", csp);
+  }
+
   return new Response(response.body, {
     status: response.status,
     statusText: response.statusText,

@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
+const DEFAULT_OPTIONS: IntersectionObserverInit = { rootMargin: "100px" };
+
 /**
  * Tracks whether an element is visible in the viewport using the
  * IntersectionObserver API. Used to pause/resume heavy work (videos,
@@ -10,7 +12,7 @@ import { useCallback, useEffect, useState } from "react";
  * (e.g. a video modal that only mounts when opened).
  */
 export function useInView<T extends HTMLElement = HTMLDivElement>(
-  options: IntersectionObserverInit = { rootMargin: "100px" },
+  options: IntersectionObserverInit = DEFAULT_OPTIONS,
 ) {
   const [inView, setInView] = useState(false);
   const [node, setNode] = useState<T | null>(null);

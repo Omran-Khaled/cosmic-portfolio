@@ -5,16 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Redirecting…</title>
     <script>
-      // SPA fallback: redirect all routes to index.html for client-side routing
-      const path = decodeURIComponent(location.pathname);
-      const qs = location.search;
-      const hash = location.hash;
-      // Redirect to index.html, preserving query params and hash
-      const target = "/cosmic-portfolio/index.html" + qs + hash;
-      // Avoid infinite loop: only redirect if not already on index.html
-      if (path !== "/cosmic-portfolio/index.html" && path !== "/cosmic-portfolio/") {
-        location.replace(target);
-      }
+      // GitHub Pages SPA fallback. GitHub Pages serves this file for any path
+      // it cannot map to a file, so every missing route is sent here. The
+      // redirect targets the directory route ("/cosmic-portfolio/"), not
+      // "/cosmic-portfolio/index.html": the router only matches "/", so an
+      // explicit ".html" path renders the not-found route instead of the app.
+      (function () {
+        try {
+          const base = "/cosmic-portfolio/";
+          const baseNoSlash = base.replace(/\/$/, "");
+          const path = decodeURIComponent(location.pathname);
+          const search = location.search;
+          const hash = location.hash;
+
+          // Only redirect application routes, never valid static assets.
+          const isStaticAsset =
+            /\.(?:js|mjs|css|map|json|svg|png|jpe?g|webp|avif|ico|mp4|webm|pdf|txt|xml|wasm|woff2?|webmanifest)$/i.test(
+              path,
+            ) || /\/(?:assets|cv)\//i.test(path);
+          if (isStaticAsset) return;
+
+          // Normalize the requested path: both with and without trailing slash
+          // map to the application entry. If already at the base (either form),
+          // there is nothing to redirect (avoids a loop).
+          if (path === base || path === baseNoSlash) return;
+
+          location.replace(base + search + hash);
+        } catch (error) {
+          // Never leave the user on a blank page. Fall back to a hard-coded
+          // navigation to the base path if anything goes wrong (including
+          // malformed percent-encoding).
+          try {
+            location.replace(base);
+          } catch {
+            /* last resort: leave page as-is */
+          }
+        }
+      })();
     </script>
   </head>
   <body></body>

@@ -1,3 +1,9 @@
+# Environment secrets (keep only explicit example templates)
+.env
+.env.*
+!.env.example
+!.env.*.example
+
 # Logs
 logs
 *.log
@@ -29,4 +35,13 @@ dist/
 *.sln
 *.sw?
 
+# Generated audit / runtime artifacts (not project source)
+reports/
+cdp-report*.json
+server.err
+server.log
 
+# docs
+ARABIC_SUMMARY.md
+ARCHITECTURE.md
+FULL_DOCUMENTATION.md

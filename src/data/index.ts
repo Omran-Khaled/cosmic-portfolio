@@ -9,6 +9,24 @@ import { blackHole } from "./blackhole";
 import { timeline } from "./timeline";
 import { languages } from "./languages";
 import { manifesto } from "./manifesto";
+import { comet } from "./comet";
+import { validateData } from "./validation";
+
+const portfolioData = {
+  identity,
+  contact,
+  orbits,
+  planets,
+  galaxies,
+  blackHole,
+  timeline,
+  languages,
+  manifesto,
+  comet,
+};
+
+// Fail at the data boundary instead of rendering an invalid destination graph.
+validateData(portfolioData);
 
 export {
   identity,
@@ -21,32 +39,5 @@ export {
   languages,
   manifesto,
   storyStops,
+  comet,
 };
-
-// Runtime validation — Zod schemas ensure data integrity before any component renders.
-import { validateData, isIdentity, isPlanet, isGalaxy, isBlackHole } from "./validation";
-
-// Full-bundle check: throws with a per-field error report on any mismatch.
-// Runs in both dev and production to guarantee data integrity before render.
-validateData({
-  identity,
-  contact,
-  orbits,
-  planets,
-  galaxies,
-  blackHole,
-  timeline,
-  languages,
-  manifesto,
-});
-
-// Backwards-compatible guard drift check (cheap, whole-bundle catch above is authoritative).
-if (
-  !isIdentity(identity) ||
-  !planets.every(isPlanet) ||
-  !galaxies.every(isGalaxy) ||
-  !isBlackHole(blackHole) ||
-  !isIdentity(identity)
-) {
-  console.error("[validation] Data integrity violation detected");
-}

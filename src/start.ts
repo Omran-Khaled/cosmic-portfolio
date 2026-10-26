@@ -2,20 +2,6 @@ import { createStart, createCsrfMiddleware, createMiddleware } from "@tanstack/r
 
 import { renderErrorPage } from "./lib/error-page";
 
-// Suppress THREE.Clock deprecation warning from react-three-fiber (library-level issue).
-if (typeof globalThis !== "undefined") {
-  const originalWarn = console.warn.bind(console);
-  console.warn = (...args: unknown[]) => {
-    if (
-      typeof args[0] === "string" &&
-      args[0].includes("THREE.Clock: This module has been deprecated")
-    ) {
-      return;
-    }
-    originalWarn(...args);
-  };
-}
-
 const errorMiddleware = createMiddleware().server(async ({ next }) => {
   try {
     return await next();

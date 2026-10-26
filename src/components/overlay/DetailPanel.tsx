@@ -1,7 +1,7 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { galaxies, orbits, planets } from "@/data/index";
-import { useUniverse } from "@/hooks/useUniverse";
+import { useUniverseStore } from "@/hooks/useUniverse";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 // Lazy-load all panels — only fetched when the user actually focuses
@@ -28,8 +28,17 @@ const ContactPanel = lazy(() =>
 // Lightweight fallback while a panel's JS chunk streams in.
 function PanelFallback() {
   return (
-    <div className="flex items-center justify-center py-8">
-      <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary/30 border-t-primary" />
+    <div
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+      className="flex items-center justify-center gap-3 py-8"
+    >
+      <span
+        aria-hidden="true"
+        className="h-8 w-8 animate-spin rounded-full border-2 border-primary/30 border-t-primary"
+      />
+      <span className="text-sm text-muted-foreground">Loading destination details…</span>
     </div>
   );
 }
@@ -37,7 +46,11 @@ function PanelFallback() {
 // Fallback if a panel chunk fails to load or crashes at runtime.
 function PanelErrorFallback() {
   return (
-    <div className="rounded-lg border border-border/70 bg-secondary/30 p-4 text-center">
+    <div
+      role="alert"
+      aria-live="assertive"
+      className="rounded-lg border border-border/70 bg-secondary/30 p-4 text-center"
+    >
       <p className="text-sm text-muted-foreground">
         This section couldn't load right now. Please try another.
       </p>
@@ -46,13 +59,54 @@ function PanelErrorFallback() {
 }
 
 export function DetailPanel() {
-  const { focus, clearFocus } = useUniverse();
+  const focus = useUniverseStore((state) => state.focus);
+  const clearFocus = useUniverseStore((state) => state.clearFocus);
+  const mode = useUniverseStore((state) => state.mode);
+  const panelRef = useRef<HTMLElement | null>(null);
+  const returnFocusRef = useRef<HTMLElement | null>(null);
+  const wasOpenRef = useRef(false);
 
-  if (!focus) return null;
+  // This panel is deliberately non-modal: navigation and the universe remain usable.
+  // Preserve the invoking DOM focus target so closing the disclosure never strands focus.
+  useEffect(() => {
+    const isOpen = Boolean(focus);
+    if (isOpen && !wasOpenRef.current) {
+      const active = document.activeElement;
+      returnFocusRef.current =
+        active instanceof HTMLElement && active !== document.body ? active : null;
+      // Opening details is a meaningful context change, except during the
+      // guided story: there, focus must remain on the previous/next controls.
+      if (mode !== "story") panelRef.current?.focus();
+    } else if (!isOpen && wasOpenRef.current) {
+      const target = returnFocusRef.current;
+      if (target?.isConnected && !target.closest("[inert]")) {
+        target.focus();
+      } else {
+        document.querySelector<HTMLElement>("[data-dialog-return-focus]")?.focus();
+      }
+      returnFocusRef.current = null;
+    }
+    wasOpenRef.current = isOpen;
+  }, [focus, mode]);
+
+  useEffect(() => {
+    if (!focus) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (
+        event.key !== "Escape" ||
+        document.querySelector('[role="dialog"][aria-modal="true"]') !== null
+      )
+        return;
+      event.preventDefault();
+      clearFocus();
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [focus, clearFocus]);
 
   let PanelComponent: React.ComponentType<{ id: string }> | null = null;
 
-  switch (focus.kind) {
+  switch (focus?.kind) {
     case "sun":
       PanelComponent = IdentityPanel;
       break;
@@ -72,21 +126,23 @@ export function DetailPanel() {
       PanelComponent = ContactPanel;
       break;
     default:
-      return null;
+      break;
   }
 
   const getPanelContent = () => {
+    if (!focus) return null;
+
     switch (focus.kind) {
       case "sun":
         return {
           eyebrow: "Identity Core",
           title: "Omran Khaled",
-          subtitle: "Front-end Developer · Damascus, Syria",
+          subtitle: "MERN Stack Developer · Damascus, Syria",
         };
       case "orbits":
         return {
           eyebrow: "Skill orbits",
-          title: "Four systems of practice",
+          title: `${orbits.length} systems of practice`,
           subtitle:
             "Every planet belongs to an orbit; every orbit answers a different kind of question.",
         };
@@ -120,50 +176,59 @@ export function DetailPanel() {
         return {
           eyebrow: "Uplink",
           title: "Contact",
-          subtitle: "Signal open for front-end and AI-assisted engineering work.",
+          subtitle: "Signal open for MERN Stack and AI-assisted engineering work.",
         };
       default:
         return null;
     }
   };
 
-  const content = getPanelContent();
-  if (!content || !PanelComponent) return null;
+  const content = focus ? getPanelContent() : null;
 
   return (
     <AnimatePresence mode="wait">
-      <motion.aside
-        key={focus.id}
-        initial={{ opacity: 0, x: 48, filter: "blur(6px)" }}
-        animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
-        exit={{ opacity: 0, x: 48, filter: "blur(6px)" }}
-        transition={{ type: "spring", stiffness: 240, damping: 30 }}
-        className="glass-panel pointer-events-auto absolute right-3 top-16 z-20 max-h-[70vh] w-[min(92vw,27rem)] overflow-y-auto rounded-2xl p-4 md:right-6 md:top-20 md:p-5"
-      >
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <p className="label-mono text-primary">{content.eyebrow}</p>
-            <h2 className="mt-1 font-display text-2xl font-semibold text-starlight">
-              {content.title}
-            </h2>
+      {focus && content && PanelComponent ? (
+        <motion.aside
+          ref={panelRef}
+          role="region"
+          aria-labelledby="detail-panel-title"
+          tabIndex={-1}
+          key={`${focus.kind}:${focus.id}`}
+          initial={{ opacity: 0, x: 48, filter: "blur(6px)" }}
+          animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+          exit={{ opacity: 0, x: 48, filter: "blur(6px)" }}
+          transition={{ type: "spring", stiffness: 240, damping: 30 }}
+          className="glass-panel pointer-events-auto absolute right-3 top-16 z-20 max-h-[calc(100dvh-5rem-env(safe-area-inset-top)-env(safe-area-inset-bottom))] w-[min(92vw,27rem)] overflow-y-auto overscroll-contain rounded-2xl p-4 md:right-6 md:top-20 md:max-h-[calc(100dvh-6rem)] md:p-5"
+        >
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <p className="label-mono text-primary">{content.eyebrow}</p>
+              <h2
+                id="detail-panel-title"
+                className="mt-1 font-display text-2xl font-semibold text-starlight"
+              >
+                {content.title}
+              </h2>
+            </div>
+            <button
+              type="button"
+              onClick={clearFocus}
+              aria-label="Close destination details"
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-border text-xs text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            >
+              ✕
+            </button>
           </div>
-          <button
-            onClick={clearFocus}
-            aria-label="Close panel"
-            className="rounded-full border border-border px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-          >
-            ✕
-          </button>
-        </div>
-        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{content.subtitle}</p>
-        <div className="mt-5">
-          <ErrorBoundary fallback={<PanelErrorFallback />}>
-            <Suspense fallback={<PanelFallback />}>
-              <PanelComponent id={focus.id} />
-            </Suspense>
-          </ErrorBoundary>
-        </div>
-      </motion.aside>
+          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{content.subtitle}</p>
+          <div className="mt-5">
+            <ErrorBoundary fallback={<PanelErrorFallback />}>
+              <Suspense fallback={<PanelFallback />}>
+                <PanelComponent id={focus.id} />
+              </Suspense>
+            </ErrorBoundary>
+          </div>
+        </motion.aside>
+      ) : null}
     </AnimatePresence>
   );
 }

@@ -1,18 +1,25 @@
 import { StrictMode, startTransition } from "react";
-import { createRoot } from "react-dom/client";
+import { hydrateRoot, type HydrationOptions } from "react-dom/client";
 import { StartClient } from "@tanstack/react-start/client";
 
-// Static deployment (GitHub Pages) has no SSR HTML to hydrate — the
-// `public/index.html` is just a shell. Using `createRoot` instead of
-// `hydrateRoot` avoids React error #418 (hydration mismatch) caused by
-// the static HTML's `<div id="root">` not matching the `RootShell`
-// component which renders `<html>/<head>/<body>` directly.
-const rootElement = document.getElementById("root")!;
+const element = (
+  <StrictMode>
+    <StartClient />
+  </StrictMode>
+);
+
+// React never throws hydration mismatches (error #418); it reports them through
+// `onRecoverableError` and then re-renders on the client. Logging the error
+// and re-dispatching it keeps the failure visible in the console and to global
+// error handlers instead of swallowing it.
+const onRecoverableError: NonNullable<HydrationOptions["onRecoverableError"]> = (
+  error,
+  errorInfo,
+) => {
+  console.error("[hydration] recoverable error:", error, errorInfo?.componentStack);
+  reportError(error);
+};
 
 startTransition(() => {
-  createRoot(rootElement).render(
-    <StrictMode>
-      <StartClient />
-    </StrictMode>,
-  );
+  hydrateRoot(document, element, { onRecoverableError });
 });

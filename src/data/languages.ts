@@ -1,10 +1,6 @@
-export interface Language {
-  name: string;
-  level: string;
-  strength: number;
-}
+import type { LanguageEntry } from "./types";
 
-export const languages: Language[] = [
+export const languages: LanguageEntry[] = [
   { name: "Arabic", level: "Native", strength: 1 },
-  { name: "English", level: "Professional working", strength: 0.72 },
+  { name: "English", level: "Professional Working Proficiency (B1–B2)", strength: 0.72 },
 ];

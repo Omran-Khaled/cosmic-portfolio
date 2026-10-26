@@ -12,6 +12,7 @@ export const GalaxyPanel = React.memo(({ id }: { id: string }) => {
     <div className="space-y-5">
       <div className="flex gap-2">
         <button
+          type="button"
           onClick={() => setDemoOpen(true)}
           className="flex-1 rounded-xl border border-primary/50 bg-primary/15 px-3 py-2 text-center text-xs font-medium text-primary transition-all hover:-translate-y-0.5 hover:bg-primary/25"
         >
@@ -23,6 +24,7 @@ export const GalaxyPanel = React.memo(({ id }: { id: string }) => {
         open={demoOpen}
         src={galaxy.links.demo}
         title={galaxy.name}
+        fallbackHref={galaxy.links.github}
         onClose={() => setDemoOpen(false)}
       />
 

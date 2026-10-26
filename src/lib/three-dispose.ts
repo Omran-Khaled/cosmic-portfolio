@@ -7,23 +7,39 @@ import * as THREE from "three";
  */
 export function disposeObject3D(object: THREE.Object3D | null | undefined): void {
   if (!object) return;
+
+  // A scene subtree can intentionally reuse one geometry/material across
+  // several meshes (Constellation shares its line geometry). Dispose each
+  // owned resource once per subtree instead of issuing duplicate dispose calls.
+  const disposedGeometries = new Set<THREE.BufferGeometry>();
+  const disposedMaterials = new Set<THREE.Material>();
+  const disposedTextures = new Set<THREE.Texture>();
+
   object.traverse((child) => {
     const mesh = child as THREE.Mesh;
-    if (mesh.geometry) {
+    if (mesh.geometry && !disposedGeometries.has(mesh.geometry)) {
+      disposedGeometries.add(mesh.geometry);
       mesh.geometry.dispose();
     }
     const material = mesh.material;
     if (Array.isArray(material)) {
-      material.forEach((m) => disposeMaterial(m));
+      material.forEach((item) => disposeMaterial(item, disposedMaterials, disposedTextures));
     } else if (material) {
-      disposeMaterial(material);
+      disposeMaterial(material, disposedMaterials, disposedTextures);
     }
   });
 }
 
-function disposeMaterial(material: THREE.Material): void {
+function disposeMaterial(
+  material: THREE.Material,
+  disposedMaterials: Set<THREE.Material>,
+  disposedTextures: Set<THREE.Texture>,
+): void {
+  if (disposedMaterials.has(material)) return;
+  disposedMaterials.add(material);
   material.dispose();
-  // Dispose any maps attached to the material to avoid texture leaks.
+
+  // Dispose maps owned by this subtree, while deduplicating shared textures.
   const std = material as unknown as Record<string, unknown>;
   for (const key of [
     "map",
@@ -40,7 +56,10 @@ function disposeMaterial(material: THREE.Material): void {
     "envMap",
   ]) {
     const texture = std[key];
-    if (texture instanceof THREE.Texture) texture.dispose();
+    if (texture instanceof THREE.Texture && !disposedTextures.has(texture)) {
+      disposedTextures.add(texture);
+      texture.dispose();
+    }
   }
 }
 

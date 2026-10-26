@@ -1,28 +1,13 @@
-export interface ContactChannel {
-  label: string;
-  value: string;
-  href: string;
-  obfuscated?: string;
-}
+import { STATION_RADIUS, polarXZ } from "@/constants/layout";
 
-export interface ContactLine {
-  label: string;
-  value: string;
-}
-
-export interface Contact {
-  title: string;
-  position: [number, number, number];
-  lines: ContactLine[];
-  channels: ContactChannel[];
-}
+import type { Contact } from "./types";
 
 export const contact: Contact = {
   title: "Space Station",
-  position: [26, 16, 30],
+  position: polarXZ(STATION_RADIUS, 130, 22),
   lines: [
     { label: "Name", value: "Omran Khaled" },
-    { label: "Role", value: "Front-end Developer" },
+    { label: "Role", value: "MERN Stack Developer | Full-Stack Web Developer" },
     { label: "Location", value: "Damascus, Syria" },
     { label: "Availability", value: "Open to work" },
   ],
