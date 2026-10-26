@@ -1,0 +1,233 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="1440"
+  height="860"
+  viewBox="0 0 1440 860"
+  role="img"
+  aria-labelledby="title desc"
+>
+  <title id="title">One portfolio, two experiences</title>
+  <desc id="desc">
+    The home route checks WebGL and device capabilities, then chooses a DOM-first mobile experience
+    or a lazy-loaded React Three Fiber scene. Both share typed portfolio data, while the 3D
+    experience and overlays share Zustand state.
+  </desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#080d1c" />
+      <stop offset="1" stop-color="#11152b" />
+    </linearGradient>
+    <linearGradient id="hero" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#10263a" />
+      <stop offset="1" stop-color="#1a1937" />
+    </linearGradient>
+    <linearGradient id="teal" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#41e6d2" />
+      <stop offset="1" stop-color="#67aaff" />
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <pattern id="grid" width="44" height="44" patternUnits="userSpaceOnUse">
+      <path d="M44 0H0V44" fill="none" stroke="#8ba4d0" stroke-opacity=".055" />
+    </pattern>
+    <style>
+      text {
+        font-family: "Segoe UI", Arial, sans-serif;
+      }
+      .eyebrow {
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 3px;
+        fill: #65dfd4;
+      }
+      .title {
+        font-size: 38px;
+        font-weight: 700;
+        letter-spacing: -1px;
+        fill: #f2f5ff;
+      }
+      .subtitle {
+        font-size: 16px;
+        fill: #9ba9c2;
+      }
+      .card-title {
+        font-size: 19px;
+        font-weight: 700;
+        fill: #f2f5ff;
+      }
+      .card-copy {
+        font-size: 14px;
+        fill: #a9b7ce;
+      }
+      .tag {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1.6px;
+        fill: #7d91b2;
+      }
+      .node {
+        fill: #111b2c;
+        stroke: #35526d;
+        stroke-width: 1.5;
+      }
+      .node-teal {
+        fill: #10252e;
+        stroke: #38cbbd;
+        stroke-width: 1.5;
+      }
+      .node-violet {
+        fill: #1c1933;
+        stroke: #a58cff;
+        stroke-width: 1.5;
+      }
+      .wire {
+        fill: none;
+        stroke: #466985;
+        stroke-width: 2;
+      }
+      .pulse {
+        fill: none;
+        stroke: url(#teal);
+        stroke-width: 3;
+        stroke-dasharray: 9 17;
+        animation: flow 5s linear infinite;
+      }
+      .star {
+        fill: #b9d8ed;
+        animation: twinkle 3s ease-in-out infinite alternate;
+      }
+      @keyframes flow {
+        to {
+          stroke-dashoffset: -104;
+        }
+      }
+      @keyframes twinkle {
+        to {
+          opacity: 0.22;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .pulse,
+        .star {
+          animation: none;
+        }
+      }
+    </style>
+  </defs>
+  <rect width="1440" height="860" rx="30" fill="url(#bg)" />
+  <rect width="1440" height="860" rx="30" fill="url(#grid)" />
+  <circle class="star" cx="92" cy="90" r="2" />
+  <circle class="star" cx="1320" cy="104" r="2" />
+  <circle class="star" cx="1375" cy="770" r="2" />
+  <circle class="star" cx="76" cy="725" r="1.5" />
+  <text x="72" y="78" class="eyebrow">SYSTEM MAP / 01</text>
+  <text x="72" y="130" class="title">One portfolio. Two experiences.</text>
+  <text x="72" y="164" class="subtitle">
+    Capability-aware by design — with the same portfolio content in either mode.
+  </text>
+
+  <rect
+    x="72"
+    y="214"
+    width="1296"
+    height="118"
+    rx="22"
+    fill="url(#hero)"
+    stroke="#426484"
+    stroke-width="1.5"
+  />
+  <circle
+    cx="124"
+    cy="273"
+    r="23"
+    fill="#153246"
+    stroke="#50dcd0"
+    stroke-width="1.5"
+    filter="url(#glow)"
+  />
+  <text x="124" y="279" text-anchor="middle" font-size="20" fill="#8cf4e5">⌂</text>
+  <text x="168" y="263" class="tag">ENTRY POINT</text>
+  <text x="168" y="294" class="card-title">Home route → UniverseExperience</text>
+  <text x="900" y="279" class="card-copy">Detect WebGL support · check device constraints</text>
+
+  <path class="wire" d="M720 332V378M720 378H390V424M720 378H1050V424" />
+  <path class="pulse" d="M720 332V378M720 378H390V424M720 378H1050V424" />
+  <circle cx="720" cy="378" r="6" fill="#65dfd4" filter="url(#glow)" />
+
+  <rect class="node-violet" x="86" y="424" width="574" height="204" rx="22" />
+  <text x="122" y="468" class="eyebrow" style="fill: #b7a2ff">PATH A / FALLBACK</text>
+  <text x="122" y="509" class="card-title">MobileUniverse</text>
+  <text x="122" y="540" class="card-copy">DOM-first, responsive portfolio</text>
+  <text x="122" y="568" class="card-copy">Projects, skills, timeline &amp; contact</text>
+  <rect x="122" y="586" width="148" height="24" rx="12" fill="#30294c" />
+  <text x="196" y="603" text-anchor="middle" class="tag" style="fill: #cabdff">
+    NO WEBGL REQUIRED
+  </text>
+  <circle cx="588" cy="493" r="13" fill="#ad91ff" opacity=".85" />
+  <ellipse
+    cx="588"
+    cy="493"
+    rx="48"
+    ry="16"
+    fill="none"
+    stroke="#aa8bff"
+    stroke-opacity=".5"
+    transform="rotate(-24 588 493)"
+  />
+  <ellipse
+    cx="588"
+    cy="493"
+    rx="70"
+    ry="26"
+    fill="none"
+    stroke="#aa8bff"
+    stroke-opacity=".28"
+    transform="rotate(22 588 493)"
+  />
+
+  <rect class="node-teal" x="780" y="424" width="574" height="204" rx="22" />
+  <text x="816" y="468" class="eyebrow">PATH B / 3D EXPERIENCE</text>
+  <text x="816" y="509" class="card-title">Lazy UniverseCanvas</text>
+  <text x="816" y="540" class="card-copy">React Three Fiber scene · planets · galaxies</text>
+  <text x="816" y="568" class="card-copy">HUD · detail panel · guided story controls</text>
+  <rect x="816" y="586" width="151" height="24" rx="12" fill="#153d42" />
+  <text x="891" y="603" text-anchor="middle" class="tag" style="fill: #8ff2df">
+    WEBGL AVAILABLE
+  </text>
+  <circle cx="1274" cy="493" r="16" fill="#f4c66f" filter="url(#glow)" />
+  <ellipse cx="1274" cy="493" rx="51" ry="17" fill="none" stroke="#69dcd1" stroke-opacity=".55" />
+  <ellipse
+    cx="1274"
+    cy="493"
+    rx="75"
+    ry="27"
+    fill="none"
+    stroke="#9c8cff"
+    stroke-opacity=".35"
+    transform="rotate(-24 1274 493)"
+  />
+
+  <rect class="node" x="86" y="694" width="574" height="98" rx="18" />
+  <text x="122" y="733" class="tag">SHARED CONTENT</text>
+  <text x="122" y="765" class="card-title" style="font-size: 17px">
+    Typed data → both experiences
+  </text>
+  <path class="wire" d="M390 694V654" />
+  <path class="pulse" d="M390 694V654" />
+
+  <rect class="node" x="780" y="694" width="574" height="98" rx="18" />
+  <text x="816" y="733" class="tag">INTERACTION STATE</text>
+  <text x="816" y="765" class="card-title" style="font-size: 17px">
+    Zustand → scene, focus &amp; overlays
+  </text>
+  <path class="wire" d="M1050 694V654" />
+  <path class="pulse" d="M1050 694V654" />
+
+  <text x="72" y="832" class="tag">CODE-DERIVED · NOT A SCREENSHOT</text>
+  <text x="1368" y="832" text-anchor="end" class="tag">COSMIC PORTFOLIO / RUNTIME</text>
+</svg>

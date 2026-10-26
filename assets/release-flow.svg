@@ -1,0 +1,185 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="1440"
+  height="650"
+  viewBox="0 0 1440 650"
+  role="img"
+  aria-labelledby="title desc"
+>
+  <title id="title">From commit to GitHub Pages</title>
+  <desc id="desc">
+    Pushes, manual runs, and pull requests go through dependency audit, lint, formatting, typecheck,
+    tests, build, release validation, and an HTTP smoke test. The client artifact is uploaded, but
+    deployment runs only for non-pull-request pushes to main.
+  </desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#080d1c" />
+      <stop offset="1" stop-color="#11152b" />
+    </linearGradient>
+    <linearGradient id="track" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#43dfce" />
+      <stop offset=".52" stop-color="#77bfff" />
+      <stop offset="1" stop-color="#b38cff" />
+    </linearGradient>
+    <pattern id="grid" width="44" height="44" patternUnits="userSpaceOnUse">
+      <path d="M44 0H0V44" fill="none" stroke="#8ba4d0" stroke-opacity=".05" />
+    </pattern>
+    <style>
+      text {
+        font-family: "Segoe UI", Arial, sans-serif;
+      }
+      .eyebrow {
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 3px;
+        fill: #65dfd4;
+      }
+      .title {
+        font-size: 38px;
+        font-weight: 700;
+        letter-spacing: -1px;
+        fill: #f2f5ff;
+      }
+      .subtitle {
+        font-size: 16px;
+        fill: #9ba9c2;
+      }
+      .card-title {
+        font-size: 19px;
+        font-weight: 700;
+        fill: #f2f5ff;
+      }
+      .card-copy {
+        font-size: 14px;
+        fill: #a9b7ce;
+      }
+      .tag {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        fill: #87a2c4;
+      }
+      .card {
+        fill: #111b2c;
+        stroke: #38516c;
+        stroke-width: 1.5;
+      }
+      .accent {
+        fill: #10252e;
+        stroke: #38cbbd;
+        stroke-width: 1.5;
+      }
+      .deploy {
+        fill: #1d1933;
+        stroke: #a58cff;
+        stroke-width: 1.5;
+      }
+      .path {
+        fill: none;
+        stroke: #38516c;
+        stroke-width: 3;
+      }
+      .pulse {
+        fill: none;
+        stroke: url(#track);
+        stroke-width: 3;
+        stroke-dasharray: 10 18;
+        animation: flow 5s linear infinite;
+      }
+      .spark {
+        animation: blink 2.6s ease-in-out infinite alternate;
+      }
+      @keyframes flow {
+        to {
+          stroke-dashoffset: -112;
+        }
+      }
+      @keyframes blink {
+        to {
+          opacity: 0.3;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .pulse,
+        .spark {
+          animation: none;
+        }
+      }
+    </style>
+  </defs>
+  <rect width="1440" height="650" rx="30" fill="url(#bg)" />
+  <rect width="1440" height="650" rx="30" fill="url(#grid)" />
+  <circle class="spark" cx="1320" cy="95" r="2" fill="#b8d9ef" />
+  <circle class="spark" cx="92" cy="590" r="2" fill="#b8d9ef" />
+  <text x="72" y="78" class="eyebrow">DELIVERY MAP / 02</text>
+  <text x="72" y="130" class="title">From commit to the live edge.</text>
+  <text x="72" y="164" class="subtitle">
+    Every release is checked; only a push to main can pass the deployment gate.
+  </text>
+
+  <path class="path" d="M268 330H338M570 330H640M872 330H942M1174 330H1220" />
+  <path class="pulse" d="M268 330H338M570 330H640M872 330H942M1174 330H1220" />
+
+  <rect class="card" x="72" y="235" width="196" height="190" rx="20" />
+  <circle cx="111" cy="279" r="19" fill="#183548" stroke="#4ddbd0" />
+  <path d="M111 267v23m-8-8 8 8 8-8" fill="none" stroke="#9af0e2" stroke-width="2" />
+  <text x="98" y="334" class="tag">TRIGGER</text>
+  <text x="98" y="363" class="card-title" style="font-size: 17px">Push · manual</text>
+  <text x="98" y="389" class="card-copy">Pull request</text>
+
+  <rect class="accent" x="338" y="235" width="232" height="190" rx="20" />
+  <circle cx="378" cy="279" r="19" fill="#124145" stroke="#4ddbd0" />
+  <path d="m370 279 6 6 11-13" fill="none" stroke="#9af0e2" stroke-width="2.5" />
+  <text x="364" y="334" class="tag">QUALITY GATE</text>
+  <text x="364" y="362" class="card-title" style="font-size: 17px">Audit · lint · format</text>
+  <text x="364" y="389" class="card-copy">Typecheck · tests</text>
+
+  <rect class="card" x="640" y="235" width="232" height="190" rx="20" />
+  <circle cx="680" cy="279" r="19" fill="#1b2a47" stroke="#79b6ff" />
+  <path d="M671 274h18v12h-18zM674 270h12" fill="none" stroke="#a8cbff" stroke-width="2" />
+  <text x="666" y="334" class="tag">BUILD &amp; VERIFY</text>
+  <text x="666" y="362" class="card-title" style="font-size: 17px">Static client</text>
+  <text x="666" y="389" class="card-copy">Validate · HTTP smoke test</text>
+
+  <rect class="card" x="942" y="235" width="232" height="190" rx="20" />
+  <circle cx="982" cy="279" r="19" fill="#252342" stroke="#aa92ff" />
+  <path d="M972 272h20v14h-20zM977 267h10v5" fill="none" stroke="#c5b5ff" stroke-width="2" />
+  <text x="968" y="334" class="tag">ARTIFACT</text>
+  <text x="968" y="362" class="card-title" style="font-size: 17px">Upload client</text>
+  <text x="968" y="389" class="card-copy">dist/client</text>
+
+  <path
+    d="M1290 425V481H1060"
+    fill="none"
+    stroke="#a58cff"
+    stroke-width="2"
+    stroke-dasharray="6 8"
+  />
+  <rect class="deploy" x="1220" y="235" width="160" height="190" rx="20" />
+  <circle cx="1260" cy="279" r="19" fill="#30294c" stroke="#b49cff" />
+  <path d="M1252 282h16m-8-9v18m-8-18h16" fill="none" stroke="#d1c3ff" stroke-width="2" />
+  <text x="1245" y="334" class="tag">DEPLOY GATE</text>
+  <text x="1245" y="362" class="card-title" style="font-size: 16px">main + non-PR</text>
+  <text x="1245" y="389" class="card-copy">otherwise stops</text>
+
+  <rect
+    x="780"
+    y="481"
+    width="560"
+    height="92"
+    rx="18"
+    fill="#17152b"
+    stroke="#6c5a9e"
+    stroke-width="1.5"
+  />
+  <text x="814" y="519" class="eyebrow" style="fill: #c0aaff">PUBLISH</text>
+  <text x="814" y="549" class="card-title" style="font-size: 18px">GitHub Pages deploy action</text>
+  <path d="M1300 425V454Q1300 481 1320 481" fill="none" stroke="#a58cff" stroke-width="2" />
+  <circle cx="1300" cy="454" r="5" fill="#c4adff" class="spark" />
+
+  <text x="72" y="607" class="tag">
+    WORKFLOW-DERIVED · REPOSITORY PAGES SETTINGS / LIVE DEPLOYMENT NOT VERIFIED
+  </text>
+  <text x="1368" y="607" text-anchor="end" class="tag">COSMIC PORTFOLIO / RELEASE</text>
+</svg>
